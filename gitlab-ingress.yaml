@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ingress-nginx
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dev-ingress
+  namespace: ingress-nginx
+spec:
+  ports:
+    - name: gitlab
+      port: 90
+      targetPort: 80
+  selector:
+    app.kubernetes.io/name: ingress-nginx  # 위의 namespace와 ingress control namespace와 모두 일치해야 한다.
+    app.kubernetes.io/part-of: ingress-nginx
+  externalIPs:
+    - 192.168.0.169
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: dev
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    kubernetes.io/ingress.class: "nginx" 
+spec:
+  rules:
+  - host: gitlab.krei.co.kr
+    http:
+      paths:
+      - backend:
+          serviceName: gitlab
+          servicePort: 90  

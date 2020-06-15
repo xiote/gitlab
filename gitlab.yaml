@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gitlab
+  labels:
+    app: gitlab
+spec:
+  ports:
+  - port: 30001
+    name: registry
+    nodePort: 30001
+  - port: 90
+    name: main
+  selector:
+    app: gitlab
+  type: NodePort
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: gitlab
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: gitlab
+    spec:
+      containers:
+        - name: gitlab
+          #image: gitlab/gitlab-ce:latest
+          image: gitlab/gitlab-ce:12.2.4-ce.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 90
+            - containerPort: 443
+            - containerPort: 22
+            - containerPort: 30001
+          resources:
+            requests:
+              cpu: "500m" 
+              memory: "2048Mi" 
+#            limits:
+#              cpu: "4000m" 
+#              memory: "2048Mi" 
+          env: 
+            - name: GITLAB_OMNIBUS_CONFIG 
+              value: "external_url 'http://gitlab.krei.co.kr:90/'; gitlab_rails['internal_api_url'] = 'http://gitlab.krei.co.kr:90'; registry_external_url 'https://gitlab.krei.co.kr:30001';" 
+          volumeMounts:
+            #### manual nfs setting
+            - name: config
+              mountPath: /etc/gitlab #exact directory
+            - name: logs
+              mountPath: /var/log/gitlab #exact directory
+            - name: data
+              mountPath: /var/opt/gitlab #exact directory
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: gitlab-config
+        - name: logs
+          persistentVolumeClaim:
+            claimName: gitlab-logs
+        - name: data
+          persistentVolumeClaim:
+            claimName: gitlab-data

@@ -1,0 +1,137 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: gitlab-config
+  labels: 
+    type: nfs
+    index: gitlab-config
+spec:
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Recycle
+  storageClassName: slow
+  mountOptions:
+    - nfsvers=4.1
+    - nofail
+    - lookupcache=positive
+  nfs:
+    path: /home/nfs/gitlab-config
+    server: 192.168.0.42
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: gitlab-log
+  labels: 
+    type: nfs
+    index: gitlab-log
+spec:
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Recycle
+  storageClassName: slow
+  mountOptions:
+    - nfsvers=4.1
+    - nofail
+    - lookupcache=positive
+  nfs:
+    path: /home/nfs/gitlab-log
+    server: 192.168.0.42
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: gitlab-data
+  labels: 
+    type: nfs
+    index: gitlab-data
+spec:
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Recycle
+  storageClassName: slow
+  mountOptions:
+    - nfsvers=4.1
+    - nofail
+    - lookupcache=positive
+  nfs:
+    path: /home/nfs/gitlab-data
+    server: 192.168.0.42
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: hpv01
+  labels: 
+    type: hdd
+    index: hpv01
+spec:
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: manual 
+  hostPath:
+    path: /mnt/data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gitlab-config
+spec:
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: slow
+  selector:
+    matchExpressions:
+      - {key: type, operator: In, values: [nfs]}
+      - {key: index, operator: In, values: [gitlab-config]}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gitlab-logs
+spec:
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: slow
+  selector:
+    matchExpressions:
+      - {key: type, operator: In, values: [nfs]}
+      - {key: index, operator: In, values: [gitlab-log]}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gitlab-data
+spec:
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: slow
+  selector:
+    matchExpressions:
+      - {key: type, operator: In, values: [nfs]}
+      - {key: index, operator: In, values: [gitlab-data]}
