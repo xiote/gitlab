@@ -16,8 +16,8 @@ spec:
   selector:
     app.kubernetes.io/name: ingress-nginx  # 위의 namespace와 ingress control namespace와 모두 일치해야 한다.
     app.kubernetes.io/part-of: ingress-nginx
-  externalIPs:
-    - 192.168.0.169
+#  externalIPs:
+#    - 192.168.0.169
 ---
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
