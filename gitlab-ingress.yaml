@@ -6,7 +6,7 @@ metadata:
 apiVersion: v1
 kind: Service
 metadata:
-  name: dev-ingress
+  name: frontend-ingress
   namespace: ingress-nginx
 spec:
   ports:
@@ -16,8 +16,7 @@ spec:
   selector:
     app.kubernetes.io/name: ingress-nginx  # 위의 namespace와 ingress control namespace와 모두 일치해야 한다.
     app.kubernetes.io/part-of: ingress-nginx
-#  externalIPs:
-#    - 192.168.0.169 # k8s-worker1
+  type: NodePort
 ---
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
