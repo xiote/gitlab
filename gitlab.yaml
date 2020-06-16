@@ -13,7 +13,7 @@ spec:
     nodePort: 30001
   - port: 90
     name: main
-type: NodePort
+  type: NodePort
 ---
 apiVersion: apps/v1
 kind: Deployment
