@@ -11,7 +11,7 @@ metadata:
 spec:
   ports:
     - name: gitlab
-      port: 90
+      port: 30090
       targetPort: 80
   selector:
     app.kubernetes.io/name: ingress-nginx  # 위의 namespace와 ingress control namespace와 모두 일치해야 한다.
